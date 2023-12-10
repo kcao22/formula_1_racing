@@ -33,8 +33,10 @@ class ErgastAPI(GenericAPI):
             logger.error(f"Year range error occurred: {year_start} is 
                          later than {year_end}. Did you mean to reverse
                          the year arguments?")
+        if year_start < 1950:
+            logger.error(f"ErgastAPI tracks ")
         results = []
         try:
             for year in range(year_start, year_end+1):
-            super().get()
+                super().get()
         except 
