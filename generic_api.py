@@ -38,10 +38,11 @@ class GenericAPI():
         try:
             # Check request status code
             response.raise_for_status()
-            # 
         except requests.exceptions.HTTPError as e:
             logger.exception(f"HTTP Error occurred: {str(e)}")
-            return f"Error: {str(e)}"
+            # Catch last exception active within current scope
+            # Re-raise exception after logging
+            raise
         else:
             logger.info("Successfully returning JSON object.")
             return response.json()

@@ -1,4 +1,5 @@
 # Imports
+import datetime
 import logging
 import requests
 from generic_api import GenericAPI
@@ -29,14 +30,16 @@ class ErgastAPI(GenericAPI):
         Returns:
             List of JSON objects.
         """
-        if year_start > year_end:
-            logger.error(f"Year range error occurred: {year_start} is 
-                         later than {year_end}. Did you mean to reverse
-                         the year arguments?")
-        if year_start < 1950:
-            logger.error(f"ErgastAPI tracks ")
-        results = []
-        try:
-            for year in range(year_start, year_end+1):
-                super().get()
-        except 
+        # Check arguments
+        if (year_start < 1950 or year_end > datetime.datetime.now().year or year_start > year_end):
+            logger.error(f"Year range error occurred: Year range {year_start} - {year_end} is an invalid year range.")
+            raise ValueError("Year range must be between 1950 and current year. Please ensure year start is prior to year end.")
+        else:
+            logger.info(f"Requesting historical data from range {year_start} - {year_end}.")
+            results = []
+            if year_start == year_end:
+                results.append(super().get(f"/{year_start}.json"))
+            else:
+                for year in range(year_start, year_end+1):
+                    results.append(super().get(f"/{year}.json"))
+            return results
