@@ -38,8 +38,24 @@ class ErgastAPI(GenericAPI):
             logger.info(f"Requesting historical data from range {year_start} - {year_end}.")
             results = []
             if year_start == year_end:
-                results.append(super().get(f"/{year_start}.json"))
+                results.append(super().get(f"{year_start}.json"))
             else:
                 for year in range(year_start, year_end+1):
-                    results.append(super().get(f"/{year}.json"))
+                    results.append(super().get(f"{year}.json"))
             return results
+    
+    def get_latest_results(self):
+        """
+        Gets the latest race results.
+        
+        Args:
+            None
+            
+        Returns:
+            JSON object.
+        """
+        logger.info("Requesting latest race results.")
+        return super().get("current/last/results.json")
+    # https://ergast.com/api/f1/current.json
+    # 'http://ergast.com/api/f1'
+    # res = requests.get("http://ergast.com/api/f1/current/last/results.json")
