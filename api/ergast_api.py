@@ -2,7 +2,7 @@
 import datetime
 import logging
 import requests
-from generic_api import GenericAPI
+from .generic_api import GenericAPI
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +56,3 @@ class ErgastAPI(GenericAPI):
         """
         logger.info("Requesting latest race results.")
         return super().get("current/last/results.json")
-    # https://ergast.com/api/f1/current.json
-    # 'http://ergast.com/api/f1'
-    # res = requests.get("http://ergast.com/api/f1/current/last/results.json")
