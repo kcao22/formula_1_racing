@@ -164,3 +164,11 @@ cython_debug/
 
 # Configs
 *.config
+
+# Terraform variables
+# .gitignore
+terraform.tfvars
+*.tfstate
+*.tfstate.*.backup
+*.tfstate.backup
+*.terraform
