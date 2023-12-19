@@ -33,6 +33,7 @@ class GenericAPI():
             Requested data as JSON object.
         """
         url = f"{self.base_url}/{path_parameter}"
+        print(url)
         response = requests.get(url)
         logger.info(f"API get request sent for path URL: {url}.")
         try:

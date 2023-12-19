@@ -173,3 +173,7 @@ terraform.tfvars
 *.tfstate.*.backup
 *.tfstate.backup
 *.terraform
+
+# Data
+*.zip
+*.csv
