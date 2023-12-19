@@ -1,49 +1,39 @@
-variable "client_id" {
-    type = string
-    sensitive = true
+variable "region" {
+  type      = string
+  sensitive = true
 }
 
-variable "client_secret" {
-    type = string
-    sensitive = true
+variable "access_key" {
+  type      = string
+  sensitive = true
 }
 
-variable "subscription_id" {
-    type = string
-    sensitive = true
+variable "secret_key" {
+  type      = string
+  sensitive = true
 }
 
-variable "tenant_id" {
-    type = string
-    sensitive = true
+variable "account_id" {
+  type = string
+  sensitive = true
 }
 
-variable "location" {
-    type = string
-    sensitive = true
+variable "bucket_name" {
+  type      = string
+  sensitive = true
 }
 
-variable "sql_server_login" {
-    type = string
-    sensitive = true
+variable "rds_dbname" {
+  type = string
+  sensitive = true
 }
 
-variable "sql_server_password" {
-    type = string
-    sensitive = true
+variable "rds_username" {
+  type      = string
+  sensitive = true
 }
 
-variable "ip_address" {
-    type = string
-    sensitive = true
-}
-
-variable "" {
-    type = string
-    sensitive = true
-}
-
-variable "" {
-    type = string
-    sensitive = true
+variable "rds_password" {
+  type      = string
+  sensitive = true
 }
