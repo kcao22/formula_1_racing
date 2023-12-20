@@ -170,9 +170,13 @@ cython_debug/
 # .gitignore
 terraform.tfvars
 *.tfstate
+*.tfstate.*
 *.tfstate.*.backup
 *.tfstate.backup
-*.terraform
+.terraform/
+**/.terraform/*
+.terraformrc
+terraform.rc
 
 # Data
 *.zip

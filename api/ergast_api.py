@@ -103,11 +103,7 @@ class ErgastAPI(GenericAPI):
         with open(file_path, "wb") as file:
             shutil.copyfileobj(res.raw, file)
         logger.info(f"Compressed archive downloaded to path: {file_path}. \nExtracting CSV files from zipped archive.")
-        # Extract and save CSV files locally
+        # Extract and save CSV files locally   
         with zipfile.ZipFile(file_path, "r") as zip_file:
-            for file in zip_file.namelist():
-                if file.endswith(".csv"):
-                    csv_path = f"{directory_path}/{file}"
-                    self._check_delete_file(csv_path)
-                    zip_file.extract(file, csv_path)
+            zip_file.extractall(directory_path)
         logger.info(f"All CSV files extracted.")

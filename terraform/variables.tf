@@ -3,18 +3,8 @@ variable "region" {
   sensitive = true
 }
 
-variable "access_key" {
-  type      = string
-  sensitive = true
-}
-
-variable "secret_key" {
-  type      = string
-  sensitive = true
-}
-
 variable "account_id" {
-  type = string
+  type      = string
   sensitive = true
 }
 
@@ -24,7 +14,7 @@ variable "bucket_name" {
 }
 
 variable "rds_dbname" {
-  type = string
+  type      = string
   sensitive = true
 }
 
