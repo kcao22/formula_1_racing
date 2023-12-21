@@ -91,7 +91,6 @@ class ErgastAPI(GenericAPI):
         
         # Get data from API
         api_path = f"{self.base_url}/downloads/f1db_csv.zip"
-        print(api_path)
         logger.info(f"API get request for path URL: {api_path}.")
         try:
             res = requests.get(api_path, stream=True)

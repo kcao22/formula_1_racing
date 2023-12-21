@@ -1,7 +1,8 @@
 # Imports
 import boto3
 import configparser
-import logging 
+import logging
+import os
 
 logger = logging.getLogger(__name__)
 
@@ -13,10 +14,11 @@ class AWSSession():
         """
         Instantiates Loader object.
         """
-        self.parser = configparser.ConfigParser().read_file(open(r'D:\Documents\Data Projects\formula_1_racing\credentials.config'))
-        self.access_key = self.parser.get("AWS", "aws_access_key")
-        self.secret_key = self.parser.get("AWS", "aws_secret_key")
-        self.region = self.parser.get("AWS", "region")
+        self.config = configparser.ConfigParser()
+        self.config.read(os.path.join(os.path.dirname(os.path.abspath(__file__)), "credentials.config"))
+        self.access_key = self.config.get("AWS", "aws_access_key")
+        self.secret_key = self.config.get("AWS", "aws_secret_key")
+        self.region = self.config.get("AWS", "region")
     
     def create_session(self, aws_service: str):
         """

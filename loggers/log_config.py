@@ -18,7 +18,7 @@ def log_config():
                 "class": "logging.FileHandler",
                 "level": "DEBUG",
                 "formatter": "standard",
-                "filename": os.path.join("logs", "/mnt/d/Documents/Data Projects/formula_1_racing/loggers/ergast_etl_pipeline.log"),
+                "filename": "/mnt/d/Documents/Data Projects/formula_1_racing/loggers/ergast_etl_pipeline.log",
                 "encoding": "utf8"
             },
         },

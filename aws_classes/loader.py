@@ -1,7 +1,7 @@
 # Imports
 import os
 import logging 
-from aws_session import AWSSession
+from .aws_session import AWSSession
 
 logger = logging.getLogger(__name__)
 
@@ -9,21 +9,20 @@ class Loader():
     """
     Creates Loader object.
     """
-    def __init__(self, bucket: str):
+    def __init__(self):
         """
         Instantiates Loader object.
         """
-        self.bucket_name = bucket
         self.session = AWSSession()
 
-    def load_csv_objects(self, dir_path: str, files: list):
+    def load_csv_objects(self, dir_path: str, files: list, bucket: str):
         """
         Loads all CSV files to S3 bucket.
         
         Args:
             dir_path: Specifies where to look for CSV objects.
             files: List of CSV objects to put to S3 bucket.
-            bucket_name: AWS S3 bucket to put objects into.
+            bucket: AWS S3 bucket to put objects into.
         
         Returns:
             None
@@ -34,7 +33,7 @@ class Loader():
             with open(file_path, "rb") as data:
                 try:
                     s3.put_object(
-                        Bucket=self.bucket_name
+                        Bucket=bucket
                         , Key=file
                         , Body=data
                     )
