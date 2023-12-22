@@ -70,68 +70,74 @@ resource "aws_iam_role_policy_attachment" "lambda_s3_rw_access" {
   policy_arn = aws_iam_policy.s3_rw_policy.arn
 }
 
-# Create S3 Event Access policy to access bucket from S3 events
-resource "aws_iam_policy" "s3_access_policy" {
-  name        = "lambda_s3_access_policy"
-  description = "S3 access policy for Lambda function"
-  policy      = <<-EOF
-  {
-    "Version": "2012-10-17",
-    "Statement": [
-      {
-        "Effect": "Allow",
-        "Action": [
-          "s3:GetObject",
-          "s3:PutObject",
-          "s3:DeleteObject"
-        ],
-        "Resource": "arn:aws:s3:::${var.bucket_name}/*"
-      }
-    ]
-  }
-  EOF
-}
+# # Create S3 Event Access policy to access bucket from S3 events
+# resource "aws_iam_policy" "s3_access_policy" {
+#   name        = "lambda_s3_access_policy"
+#   description = "S3 access policy for Lambda function"
+#   policy      = <<-EOF
+#   {
+#     "Version": "2012-10-17",
+#     "Statement": [
+#       {
+#         "Effect": "Allow",
+#         "Action": [
+#           "s3:GetObject",
+#           "s3:PutObject",
+#           "s3:DeleteObject"
+#         ],
+#         "Resource": "arn:aws:s3:::${var.bucket_name}/*"
+#       }
+#     ]
+#   }
+#   EOF
+# }
 
-# Attach S3 Event Access policy to lambda role
-resource "aws_iam_role_policy_attachment" "s3_access_attachment" {
-  role       = aws_iam_role.lambda_role.name
-  policy_arn = aws_iam_policy.s3_access_policy.arn
-}
+# # Attach S3 Event Access policy to lambda role
+# resource "aws_iam_role_policy_attachment" "s3_access_attachment" {
+#   role       = aws_iam_role.lambda_role.name
+#   policy_arn = aws_iam_policy.s3_access_policy.arn
+# }
 
 # Create lambda function
+data "archive_file" "lambda_zip" {
+  type        = "zip"
+  source_file = "${path.module}/../aws_scripts/f1_racing_lambda_s3_to_rds.py"
+  output_path = "${path.module}/../aws_scripts/f1_facing_lambda_s3_to_rds.zip"
+}
+
 resource "aws_lambda_function" "lambda_function" {
-  filename      = "lambda_function_payload.zip"
-  function_name = "f1_racing_lambda"
+  filename      = data.archive_file.lambda_zip.output_path
+  function_name = "f1_facing_lambda_s3_to_rds"
   role          = aws_iam_role.lambda_role.arn
-  handler       = "index.handler"
+  handler       = "f1_facing_lambda_s3_to_rds.lambda_handler"
+  source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   runtime       = "python3.9"
 }
 
-# Create S3 bucket notification for object creations, puts, etc.
-# Filter for .csv files only
-resource "aws_s3_bucket_notification" "s3_bucket_notification" {
-  bucket = aws_s3_bucket.landing_bucket.id
+# # Create S3 bucket notification for object creations, puts, etc.
+# # Filter for .csv files only
+# resource "aws_s3_bucket_notification" "s3_bucket_notification" {
+#   bucket = aws_s3_bucket.landing_bucket.id
 
-  lambda_function {
-    lambda_function_arn = aws_lambda_function.lambda_function.arn
-    events              = ["s3:ObjectCreated:*"]
-    filter_suffix       = ".csv"
-  }
-}
+#   lambda_function {
+#     lambda_function_arn = aws_lambda_function.lambda_function.arn
+#     events              = ["s3:ObjectCreated:*"]
+#     filter_suffix       = ".csv"
+#   }
+# }
 
-# Allow bucket to trigger lambda function upon object creation event
-resource "aws_lambda_permission" "allow_bucket" {
-  statement_id  = "AllowExecutionFromS3Bucket"
-  action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.lambda_function.function_name
-  principal     = "s3.amazonaws.com"
-  source_arn    = aws_s3_bucket.landing_bucket.arn
-}
+# # Allow bucket to trigger lambda function upon object creation event
+# resource "aws_lambda_permission" "allow_bucket" {
+#   statement_id  = "AllowExecutionFromS3Bucket"
+#   action        = "lambda:InvokeFunction"
+#   function_name = aws_lambda_function.lambda_function.function_name
+#   principal     = "s3.amazonaws.com"
+#   source_arn    = aws_s3_bucket.landing_bucket.arn
+# }
 
 # Deploy RDS instance
 resource "aws_db_instance" "rds_sqlserver_db" {
   allocated_storage    = 20
-  db_name              = var.rds_dbname
   engine               = "sqlserver-ex"
   engine_version       = "15.00.4335.1.v1"
   instance_class       = "db.t3.micro"
@@ -212,21 +218,116 @@ resource "aws_iam_policy" "lambda_glue_policy" {
   EOF
 }
 
-# Attach 
+# Attach lambda glue access policy to lambda role
 resource "aws_iam_role_policy_attachment" "lambda_glue_access" {
   role       = aws_iam_role.lambda_role.name
   policy_arn = aws_iam_policy.lambda_glue_policy.arn
 }
 
+# Create glue get connection policy for testing DB connection
+resource "aws_iam_policy" "glue_get_connection_policy" {
+  name        = "glue_get_connection_policy"
+  description = "Allows Glue to get connection for connection testing"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "glue:GetConnection",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+# Attach glue get connection policy to glue role
+resource "aws_iam_role_policy_attachment" "glue_get_connection_policy_attachment" {
+  role       = aws_iam_role.glue_role.name
+  policy_arn = aws_iam_policy.glue_get_connection_policy.arn
+}
+
+# Create EC2 access policy for glue role
+resource "aws_iam_policy" "ec2_all_actions" {
+  name        = "ec2_all_actions"
+  description = "Allows all EC2 actions"
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": "ec2:*",
+      "Resource": "*"
+    }
+  ]
+}
+EOF
+}
+
+# Attach EC2 all actions policy to glue
+resource "aws_iam_role_policy_attachment" "ec2_all_actions_attachment" {
+  role       = aws_iam_role.glue_role.name
+  policy_arn = aws_iam_policy.ec2_all_actions.arn
+}
+
+# Create secret in AWS secrets manager
+resource "aws_secretsmanager_secret" "rds_credentials" {
+  name = "f1_racing_rds_credentials"
+}
+
+# Store secret content within secret
+resource "aws_secretsmanager_secret_version" "example" {
+  secret_id     = aws_secretsmanager_secret.rds_credentials.id
+  secret_string = <<EOF
+{
+  "username": ${var.rds_username},
+  "password": ${var.rds_password},
+  "hostname": ${var.rds_hostname},
+  "port": ${var.rds_port},
+  "dbname": ${var.rds_db} 
+}
+EOF
+}
+
+# Create AWS Secrets Manager access for glue role
+resource "aws_iam_policy" "aws_secrets_manager" {
+  name        = "glue_secrets_manager_access"
+  description = "Allows access to AWS Secrets Manager"
+
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        "Action": [
+          "secretsmanager:GetSecretValue"
+        ],
+        "Resource": [
+          aws_secretsmanager_secret.rds_credentials.arn
+        ],
+        "Effect": "Allow"
+      }
+    ]
+  })
+}
 
 
-# # Create glue job
-# resource "aws_glue_job" "glue_write_job" {
-#   name     = "f1_racing_write_to_rds"
-#   role_arn = aws_iam_role.glue_role.arn
+# Attach secrets access policy to glue role
+resource "aws_iam_role_policy_attachment" "aws_secretsmanager_secret_policy_attachment" {
+  role       = aws_iam_role.glue_role.name
+  policy_arn = aws_iam_policy.aws_secrets_manager.arn
+}
 
-#   command {
-#     script_location = "s3://my-script-bucket/example_script.py"
-#     name            = "glueetl"
-#   }
-# }
+# Create glue job
+resource "aws_glue_job" "glue_write_job" {
+  name     = "f1_racing_glue_s3_to_rds"
+  role_arn = aws_iam_role.glue_role.arn
+
+  command {
+    script_location = "s3://kc-f1-racing-landing/f1_racing_glue_s3_to_rds.py"
+    name            = "f1_racing_glue_s3_to_rds"
+  }
+}

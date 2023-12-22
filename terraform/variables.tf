@@ -13,17 +13,27 @@ variable "bucket_name" {
   sensitive = true
 }
 
-variable "rds_dbname" {
-  type      = string
-  sensitive = true
-}
-
 variable "rds_username" {
   type      = string
   sensitive = true
 }
 
 variable "rds_password" {
+  type      = string
+  sensitive = true
+}
+
+variable "rds_hostname" {
+  type      = string
+  sensitive = true
+}
+
+variable "rds_port" {
+  type      = string
+  sensitive = true
+}
+
+variable "rds_db" {
   type      = string
   sensitive = true
 }
