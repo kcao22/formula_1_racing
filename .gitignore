@@ -181,3 +181,6 @@ terraform.rc
 # Data
 *.zip
 *.csv
+
+# Configurations
+profiles.yml

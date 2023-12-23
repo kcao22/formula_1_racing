@@ -51,7 +51,7 @@ resource "aws_iam_policy" "s3_rw_policy" {
         "Sid": "ListObjectsInBucket",
         "Effect": "Allow",
         "Action": ["s3:ListBucket"],
-        "Resource": ["arn:aws:s3:::${var.bucket_name}/*"]
+        "Resource": ["arn:aws:s3:::${var.bucket_name}"]
       },
       {
         "Sid": "AllObjectActions",
@@ -282,16 +282,17 @@ resource "aws_secretsmanager_secret" "rds_credentials" {
 # Store secret content within secret
 resource "aws_secretsmanager_secret_version" "example" {
   secret_id     = aws_secretsmanager_secret.rds_credentials.id
-  secret_string = <<EOF
-{
-  "username": ${var.rds_username},
-  "password": ${var.rds_password},
-  "hostname": ${var.rds_hostname},
-  "port": ${var.rds_port},
-  "dbname": ${var.rds_db} 
+  secret_string = jsonencode(
+    {
+      "username": var.rds_username,
+      "password": var.rds_password,
+      "hostname": var.rds_hostname,
+      "port": var.rds_port,
+      "dbname": var.rds_db
+    }
+  )
 }
-EOF
-}
+
 
 # Create AWS Secrets Manager access for glue role
 resource "aws_iam_policy" "aws_secrets_manager" {
@@ -319,6 +320,117 @@ resource "aws_iam_policy" "aws_secrets_manager" {
 resource "aws_iam_role_policy_attachment" "aws_secretsmanager_secret_policy_attachment" {
   role       = aws_iam_role.glue_role.name
   policy_arn = aws_iam_policy.aws_secrets_manager.arn
+}
+
+# Attach S3 read write policy to glue role
+resource "aws_iam_role_policy_attachment" "glue_s3_rw_access" {
+  role       = aws_iam_role.glue_role.name
+  policy_arn = aws_iam_policy.s3_rw_policy.arn
+}
+
+resource "aws_iam_policy" "glue_service_policy" {
+  name        = "glue_service_policy"
+  description = "Glue permissions."
+  policy      = <<-EOF
+  {
+      "Version": "2012-10-17",
+      "Statement": [
+          {
+              "Effect": "Allow",
+              "Action": [
+                  "glue:*",
+                  "s3:GetBucketLocation",
+                  "s3:ListBucket",
+                  "s3:ListAllMyBuckets",
+                  "s3:GetBucketAcl",
+                  "ec2:DescribeVpcEndpoints",
+                  "ec2:DescribeRouteTables",
+                  "ec2:CreateNetworkInterface",
+                  "ec2:DeleteNetworkInterface",
+                  "ec2:DescribeNetworkInterfaces",
+                  "ec2:DescribeSecurityGroups",
+                  "ec2:DescribeSubnets",
+                  "ec2:DescribeVpcAttribute",
+                  "iam:ListRolePolicies",
+                  "iam:GetRole",
+                  "iam:GetRolePolicy",
+                  "cloudwatch:PutMetricData",
+                  "iam:PassRole"
+              ],
+              "Resource": [
+                  "*"
+              ]
+          },
+          {
+              "Effect": "Allow",
+              "Action": [
+                  "s3:CreateBucket"
+              ],
+              "Resource": [
+                  "arn:aws:s3:::aws-glue-*"
+              ]
+          },
+          {
+              "Effect": "Allow",
+              "Action": [
+                  "s3:GetObject",
+                  "s3:PutObject",
+                  "s3:DeleteObject"
+              ],
+              "Resource": [
+                  "arn:aws:s3:::aws-glue-*/*",
+                  "arn:aws:s3:::*/*aws-glue-*/*"
+              ]
+          },
+          {
+              "Effect": "Allow",
+              "Action": [
+                  "s3:GetObject"
+              ],
+              "Resource": [
+                  "arn:aws:s3:::crawler-public*",
+                  "arn:aws:s3:::aws-glue-*"
+              ]
+          },
+          {
+              "Effect": "Allow",
+              "Action": [
+                  "logs:CreateLogGroup",
+                  "logs:CreateLogStream",
+                  "logs:PutLogEvents"
+              ],
+              "Resource": [
+                  "arn:aws:logs:*:*:*:/aws-glue/*"
+              ]
+          },
+          {
+              "Effect": "Allow",
+              "Action": [
+                  "ec2:CreateTags",
+                  "ec2:DeleteTags"
+              ],
+              "Condition": {
+                  "ForAllValues:StringEquals": {
+                      "aws:TagKeys": [
+                          "aws-glue-service-resource"
+                      ]
+                  }
+              },
+              "Resource": [
+                  "arn:aws:ec2:*:*:network-interface/*",
+                  "arn:aws:ec2:*:*:security-group/*",
+                  "arn:aws:ec2:*:*:instance/*"
+              ]
+          }
+      ]
+  }
+  EOF
+}
+
+# Attach Glue service policy to glue role
+resource "aws_iam_role_policy_attachment" "glue_service_access" {
+  role       = aws_iam_role.glue_role.name
+  policy_arn = aws_iam_policy.glue_service_policy.arn
 }
 
 # Create glue job
