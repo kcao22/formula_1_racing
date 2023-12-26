@@ -70,34 +70,6 @@ resource "aws_iam_role_policy_attachment" "lambda_s3_rw_access" {
   policy_arn = aws_iam_policy.s3_rw_policy.arn
 }
 
-# # Create S3 Event Access policy to access bucket from S3 events
-# resource "aws_iam_policy" "s3_access_policy" {
-#   name        = "lambda_s3_access_policy"
-#   description = "S3 access policy for Lambda function"
-#   policy      = <<-EOF
-#   {
-#     "Version": "2012-10-17",
-#     "Statement": [
-#       {
-#         "Effect": "Allow",
-#         "Action": [
-#           "s3:GetObject",
-#           "s3:PutObject",
-#           "s3:DeleteObject"
-#         ],
-#         "Resource": "arn:aws:s3:::${var.bucket_name}/*"
-#       }
-#     ]
-#   }
-#   EOF
-# }
-
-# # Attach S3 Event Access policy to lambda role
-# resource "aws_iam_role_policy_attachment" "s3_access_attachment" {
-#   role       = aws_iam_role.lambda_role.name
-#   policy_arn = aws_iam_policy.s3_access_policy.arn
-# }
-
 # Create lambda function
 data "archive_file" "lambda_zip" {
   type        = "zip"
@@ -113,27 +85,6 @@ resource "aws_lambda_function" "lambda_function" {
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
   runtime       = "python3.9"
 }
-
-# # Create S3 bucket notification for object creations, puts, etc.
-# # Filter for .csv files only
-# resource "aws_s3_bucket_notification" "s3_bucket_notification" {
-#   bucket = aws_s3_bucket.landing_bucket.id
-
-#   lambda_function {
-#     lambda_function_arn = aws_lambda_function.lambda_function.arn
-#     events              = ["s3:ObjectCreated:*"]
-#     filter_suffix       = ".csv"
-#   }
-# }
-
-# # Allow bucket to trigger lambda function upon object creation event
-# resource "aws_lambda_permission" "allow_bucket" {
-#   statement_id  = "AllowExecutionFromS3Bucket"
-#   action        = "lambda:InvokeFunction"
-#   function_name = aws_lambda_function.lambda_function.function_name
-#   principal     = "s3.amazonaws.com"
-#   source_arn    = aws_s3_bucket.landing_bucket.arn
-# }
 
 # Deploy RDS instance
 resource "aws_db_instance" "rds_sqlserver_db" {

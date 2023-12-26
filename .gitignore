@@ -184,3 +184,9 @@ terraform.rc
 
 # Configurations
 profiles.yml
+.formula_1_racing/dbt_project.yml
+./formula_1_racing/target
+./formula_1_racing/dbt_modules
+./formula_1_racing/logs
+./formula_1_racing/env
+./formula_1_racing/*.pyc

@@ -1,0 +1,41 @@
+
+version: 2
+
+# models:
+#   - name: my_first_dbt_model
+#     description: "A starter dbt model"
+#     columns:
+#       - name: id
+#         description: "The primary key for this table"
+#         tests:
+#           - unique
+#           - not_null
+
+#   - name: my_second_dbt_model
+#     description: "A starter dbt model"
+#     columns:
+#       - name: id
+#         description: "The primary key for this table"
+#         tests:
+#           - unique
+#           - not_null
+# Sources
+sources:
+  - name: raw
+    database: Raw
+    schema: dbo
+    tables:
+      - name: circuits
+      - name: constructor_results
+      - name: constructor_standings
+      - name: constructors
+      - name: driver_standings
+      - name: drivers
+      - name: lap_times
+      - name: pit_stops
+      - name: qualifying
+      - name: races
+      - name: results
+      - name: seasons
+      - name: sprint_results
+      - name: status
