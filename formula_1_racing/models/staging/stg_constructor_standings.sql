@@ -26,7 +26,7 @@ where constructor_standings_id > (
                     select 
                         max(constructor_standings_id) 
                     from 
-                        { { this } }
+                        {{ this }}
                     )
 {% endif %}
 

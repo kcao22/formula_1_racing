@@ -37,5 +37,5 @@ where result_id > (
                     select 
                         max(result_id) 
                     from 
-                        { { this } }
+                        {{ this }}
                     )

@@ -26,6 +26,6 @@ where driver_standings_id > (
                     select 
                         max(driver_standings_id) 
                     from 
-                        { { this } }
+                        {{ this }}
                     )
 {% endif %}

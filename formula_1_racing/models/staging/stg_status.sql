@@ -21,5 +21,5 @@ where result_id > (
                     select 
                         max(status_id) 
                     from 
-                        { { this } }
+                        {{ this }}
                     )

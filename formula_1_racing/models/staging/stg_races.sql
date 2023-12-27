@@ -37,5 +37,5 @@ where race_id > (
                     select 
                         max(race_id) 
                     from 
-                        { { this } }
+                        {{ this }}
                     )

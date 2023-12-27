@@ -39,3 +39,7 @@ models:
     marts:
       +schema: prod
       materialized: table
+
+seeds:
+  formula_1_racing:
+    +schema: prod

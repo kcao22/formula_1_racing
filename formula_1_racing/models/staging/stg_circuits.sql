@@ -28,7 +28,7 @@ where circuit_id > (
                     select 
                         max(circuit_id) 
                     from 
-                        { { this } }
+                        {{ this }}
                     )
 {% endif %}
 

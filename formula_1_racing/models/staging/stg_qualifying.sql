@@ -28,5 +28,5 @@ where qualify_id > (
                     select 
                         max(qualify_id) 
                     from 
-                        { { this } }
+                        {{ this }}
                     )

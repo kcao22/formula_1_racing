@@ -28,6 +28,6 @@ where driver_id > (
                     select 
                         max(driver_id) 
                     from 
-                        { { this } }
+                        {{ this }}
                     )
 {% endif %}

@@ -24,6 +24,6 @@ where constructor_id > (
                     select 
                         max(constructor_id) 
                     from 
-                        { { this } }
+                        {{ this }}
                     )
 {% endif %}

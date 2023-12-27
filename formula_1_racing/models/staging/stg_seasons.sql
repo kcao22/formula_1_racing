@@ -20,5 +20,5 @@ where year > (
                     select 
                         max(year) 
                     from 
-                        { { this } }
+                        {{ this }}
                     )
