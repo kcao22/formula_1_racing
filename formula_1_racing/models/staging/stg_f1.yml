@@ -1,0 +1,121 @@
+version: 2
+
+sources:
+  - name: raw_formula_1_racing
+    database: Raw
+    schema: dbo
+    tables:
+      - name: circuits
+        description: Raw table describing racing circuits, including name and location.
+        columns:
+        - name: circuitId
+          description: Unique identifier for each circuit.
+          tests:
+            - unique
+            - not_null
+      - name: constructor_results
+        description: Raw table describing results by formula race car constructor.
+        columns:
+        - name: constructorResultsId
+          description: Unique identifier for each constructor race result.
+          tests:
+            - unique
+            - not_null
+      - name: constructor_standings
+        description: Raw table describing race standings by constructor.
+        columns:
+        - name: constructorStandingsId
+          description: Unique identifier for each constructor.
+          tests:
+            - unique
+            - not_null
+      - name: constructors
+        description: Raw table describing formula race car constructors.
+        columns:
+        - name: constructorId
+          description: Unique identifier for each constructor.
+          tests:
+            - unique
+            - not_null
+      - name: driver_standings
+        description: Raw table describing race standings by driver.
+        columns:
+        - name: driverStandingsId
+          description: Unique identifier for each race standing.
+          tests:
+            - unique
+            - not_null
+      - name: drivers
+        description: Raw table describing drivers.
+        columns:
+        - name: driverId
+          description: Unique identifier for each driver.
+          tests:
+            - unique
+            - not_null
+      - name: lap_times
+        description: Raw table describing drivers.
+        tests:
+          - dbt_utils.unique_combination_of_columns:
+              combination_of_columns:
+                - raceId
+                - driverId         
+                - lap
+      - name: pit_stops
+        description: Raw table describing pit stop occurrences.
+        tests:
+          - dbt_utils.unique_combination_of_columns:
+              combination_of_columns:
+                - raceId
+                - driverId         
+                - lap
+                - stop
+      - name: qualifying
+        description: Raw table describing qualifying results.
+        columns:
+        - name: qualifyId
+          description: Unique identifier for each qualification match.
+          tests:
+            - unique
+            - not_null
+      - name: races
+        description: Raw table describing race occurrences and race details.
+        columns:
+        - name: raceId
+          description: Unique identifier for each race.
+          tests:
+            - unique
+            - not_null
+      - name: results
+        description: Raw table describing race results for all drivers.
+        columns:
+        - name: resultId
+          description: Unique identifier for each result placement.
+          tests:
+            - unique
+            - not_null
+      - name: seasons
+        description: Raw table describing a race year.
+        columns:
+        - name: year
+          description: Unique identifier for each year of racing.
+          tests:
+            - unique
+            - not_null
+      - name: sprint_results
+        description: Raw table describing sprint results.
+        columns:
+        - name: resultId
+          description: Unique identifier for each sprint result placement.
+          tests:
+            - unique
+            - not_null
+      - name: status
+        description: Raw table describing statuses of a race result.
+        columns:
+        - name: statusId
+          description: Unique identifier for each race finish status.
+          tests:
+            - unique
+            - not_null
+      

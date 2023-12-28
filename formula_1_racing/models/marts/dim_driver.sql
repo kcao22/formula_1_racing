@@ -9,7 +9,7 @@ with driver_details as (
     driver_id as driver_key
     , concat(driver_first_name, ' ', driver_last_name) as driver_name
     , datediff(year, cast(driver_date_of_birth as date), getdate()) as driver_age
-    , nationality as driver_nationality
+    , driver_nationality
   from
     {{ ref('stg_drivers') }}
 )

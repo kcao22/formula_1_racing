@@ -39,3 +39,4 @@ where race_id > (
                     from 
                         {{ this }}
                     )
+{% endif %}

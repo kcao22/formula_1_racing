@@ -18,7 +18,7 @@ with renamed as (
         points,
         laps,
         time AS lap_time,
-        CAST(milliseconds AS BIGINT) / 1000.0 AS seconds,
+        TRY_CAST(milliseconds AS BIGINT) / 1000.0 AS seconds,
         fastestLap AS fastest_lap,
         rank,
         fastestLapTime AS fastest_lap_time,
@@ -39,3 +39,4 @@ where result_id > (
                     from 
                         {{ this }}
                     )
+{% endif %}

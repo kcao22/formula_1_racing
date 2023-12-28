@@ -23,3 +23,4 @@ where result_id > (
                     from 
                         {{ this }}
                     )
+{% endif %}

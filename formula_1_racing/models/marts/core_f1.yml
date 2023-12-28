@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: dim_constructor
+    columns: 
+      - name: constructor_key
+        description: Unique identifier for car constructor.
+        tests:
+          - unique
+          - not_null
+  - name: dim_driver
+    columns: 
+      - name: driver_key
+        description: Unique identifier for driver.
+        tests:
+          - unique
+          - not_null
+  - name: dim_race
+    columns:
+      - name: race_key
+        description: Unique identifier for race.
+        tests:
+          - unique
+          - not_null
+  - name: dim_status
+    columns:
+      - name: status_key
+        description: Unique identifier for finish status.
+        tests:
+          - unique
+          - not_null
+  - name: fact_results
+    columns:
+      - name: result_key
+        description: Unique identifier for results.
+        tests:
+          - unique
+          - not_null

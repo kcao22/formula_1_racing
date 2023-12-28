@@ -4,10 +4,7 @@
     , unique_key=['result_id']
 )}}
 
-with source as (
-      select * from 
-),
-renamed as (
+with renamed as (
     select
         resultId AS result_id,
         raceId AS race_id,
@@ -21,7 +18,7 @@ renamed as (
         points,
         laps,
         time,
-        CAST(milliseconds AS BIGINT) / 1000.0 AS seconds,
+        TRY_CAST(milliseconds AS BIGINT) / 1000.0 AS seconds,
         fastestLap AS fastest_lap,
         fastestLapTime AS fastest_lap_time,
         statusId AS status_id
@@ -40,3 +37,4 @@ where result_id > (
                     from 
                         {{ this }}
                     )
+{% endif %}

@@ -10,14 +10,31 @@ with result_details as (
         , R.race_id as race_key
         , R.driver_id as driver_key
         , R.constructor_id as constructor_key
-        , R.lap_number
+        , case 
+            when R.lap_number = '\N' then 0
+            else R.lap_number
+        end as lap_number
         , R.grid as starting_grid_position
         , case
-            when is_numeric(try_cast(R.position_text) as int) = 1 then R.position_text 
-            else 
-        , 
+            when isnumeric(try_cast(R.position_text as int)) = 1 then R.position_order
+            else 0
+        end as position_num_key
+        , case
+            when R.position_text = 'D' then 1
+            when R.position_text = 'E' then 2
+            when R.position_text = 'F' then 3
+            when R.position_text = 'N' then 4
+            when R.position_text = 'R' then 5
+            when R.position_text = 'W' then 6
+            else 0
+        end as position_text_key
+        , points
+        , case
+            when R.rank = '\N' then 0 
+            else R.rank 
+        end as fastest_lap_rank
+        , R.status_id as status_key
     from {{ ref('stg_results') }} R
-        join 
 )
 select 
     *

@@ -12,8 +12,8 @@ with race_details as (
         , R.race_name
         , R.date as race_date
         , R.time as race_time
-        , C.race_circuit_name
-        , C.location as race_circuit_location
+        , C.circuit_name as race_circuit_name
+        , C.circuit_location as race_circuit_location
         , C.country as race_country
     from {{ ref('stg_races') }} R
         join {{ ref('stg_circuits' )}} C on
