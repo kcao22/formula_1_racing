@@ -1,7 +1,4 @@
-import boto3
-import loggers
 import logging
-import os
 
 from airflow import DAG
 from airflow.operators.python import PythonOperator
@@ -11,16 +8,11 @@ from datetime import datetime
 from etl import extract
 from etl import load
 
-# Instantiate logger
-logger = logging.getLogger(__name__)
-
-# Instantiate objects
-
-
-
-
 default_args = {
-    "owner": "" 
+    "depends_on_past": False,
+    "start_date": datetime(2023, 12, 30),
+    "schedule_interval": "@daily",
+    "catchup": False,
 }
 
 with DAG(
