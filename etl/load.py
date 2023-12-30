@@ -17,7 +17,7 @@ def glue_load_job(job_name: str):
     Returns:
         None
     """
-    logger.info("Beginning ")
+    logger.info("Beginning Glue job to load formula 1 CSV data to S3.")
     session = aws_session.AWSSession()
     glue = session.create_session("glue")
     try:

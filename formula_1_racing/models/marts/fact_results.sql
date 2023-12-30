@@ -28,21 +28,25 @@ with result_details as (
             when R.position_text = 'W' then 6
             else 0
         end as position_text_key
-        , points
+        , R.points
+        , R.laps
         , case
             when R.rank = '\N' then 0 
             else R.rank 
         end as fastest_lap_rank
         , R.status_id as status_key
+        , S.date as race_date
     from {{ ref('stg_results') }} R
+        left join {{ ref('stg_races') }} S on
+            R.race_id = S.race_id
 )
 select 
     *
 from result_details
 {% if is_incremental() %}
-where result_key > (
+where R.result_key > (
                     select 
-                        max(result_key)
+                        max(R.result_key)
                     from 
                         {{ this }}
                     )
