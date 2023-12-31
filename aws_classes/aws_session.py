@@ -27,7 +27,7 @@ class AWSSession():
         Args:
             aws_service: Specific service to create session object for.
         
-        Returns:
+        Returns:5
             boto3 Session object.
         """
         logger.info("Creating boto3 session object.")
