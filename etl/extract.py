@@ -19,7 +19,7 @@ def extract_to_s3(bucket: str):
     logger.info("Extract to S3 process beginning.")
     extract = ergast_api.ErgastAPI()
     current_file_path = os.path.dirname(os.path.realpath(__file__))
-    data_path = os.path.join(current_file_path, "data")
+    data_path = os.path.join(current_file_path, "..", "data")
     extract.get_all_data(data_path)
     load = loader.Loader()
     # Set list CSV files to load
