@@ -70,7 +70,7 @@ def test_ergast_api_get_latest_race_results_has_content(generic_api_instance):
     assert bool(res)
     
 def test_get_all_data_saves(ergast_api_instance):
-    current_file_path = os.path.dirname(os.path.realpath(__file__))
+    current_file_path = os.getenv("GITHUB_WORKSPACE", os.path.dirname(os.path.realpath(__file__)))
     data_path = os.path.join(current_file_path, "..", "data")
     ergast_api_instance.get_all_data(data_path)
     list_csv_objs = [file for file in os.listdir("data") if file.endswith('.csv')]
