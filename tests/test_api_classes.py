@@ -72,5 +72,5 @@ def test_ergast_api_get_latest_race_results_has_content(generic_api_instance):
     
 def test_get_all_data_saves(ergast_api_instance):
     ergast_api_instance.get_all_data("/mnt/d/Documents/Data Projects/formula_1_racing/data")
-    list_csv_objs = [file for file in os.listdir("/mnt/d/Documents/Data Projects/formula_1_racing/data") if file.endswith('.csv')]
+    list_csv_objs = [file for file in os.listdir("data") if file.endswith('.csv')]
     assert len(list_csv_objs) == 14
