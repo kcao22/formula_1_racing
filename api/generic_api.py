@@ -3,6 +3,7 @@ import requests
 
 logger = logging.getLogger(__name__)
 
+
 class GenericAPI():
     """
     Creates generic API object. Acts as a base class for all API classes
@@ -11,24 +12,24 @@ class GenericAPI():
     def __init__(self, url: str):
         """
         Instantiates GenericAPI object. Sets base URL for object.
-        
+
         Args:
             url: The base URL for an API request.
-            
+
         Returns:
             None
         """
         self.base_url = url
-        
+
     def get(self, path_parameter: str):
         """
         Appends argument path to base URL and performs get request.
-        
+
         Args:
-            path_parameter: Path parameter string that appends to base 
-            URL path before request action is sent. 
+            path_parameter: Path parameter string that appends to base
+            URL path before request action is sent.
                 Example: "current/last/results"
-        
+
         Returns:
             Requested data as JSON object.
         """
