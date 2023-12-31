@@ -1,6 +1,4 @@
 # Imports
-import boto3
-import loggers
 import logging
 import os
 
@@ -20,9 +18,11 @@ def extract_to_s3(bucket: str):
     """
     logger.info("Extract to S3 process beginning.")
     extract = ergast_api.ErgastAPI()
-    extract.get_all_data("/mnt/d/Documents/Data Projects/formula_1_racing/data")
+    current_file_path = os.path.dirname(os.path.realpath(__file__))
+    data_path = os.path.join(current_file_path, "..", "data")
+    extract.get_all_data(data_path)
     load = loader.Loader()
     # Set list CSV files to load
-    list_csv_objs = [file for file in os.listdir("/mnt/d/Documents/Data Projects/formula_1_racing/data") if file.endswith('.csv')]
+    list_csv_objs = [file for file in os.listdir("data_path") if file.endswith('.csv')]
     load.load_csv_objects(dir_path="./data/", files=list_csv_objs, bucket=bucket)
     logger.info("Loading process completed, all CSV files put into S3 bucket. Beginning Lambda function and Glue job.")
