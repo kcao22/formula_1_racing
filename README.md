@@ -1,6 +1,6 @@
 # Formula 1 Racing ETL Pipeline - Winningest Constructors and Drivers All Time
 
-**Full pipeline process**:
+**ELT Pipeline Process**:
 ![Alt Text](https://github.com/kcao22/formula_1_racing/blob/main/diagrams/Formula%201%20Racing%20ELT.png)
 
 **Demo of Final Power BI Dashboard**:
@@ -15,7 +15,8 @@
 
 ## Project Goals
  - Follow SDLC best practices (OOP, Continuous Integration, Logging) and build a robust, fault-tolerant pipeline.
- - Explore, design, and implement Terraform IaC with AWS Cloud Computing Services.
+ - Create wrapper classes for reuseable and user friendly extract and load processes.
+ - Explore, design, and implement Terraform IaC configurations with AWS Cloud Computing Services.
  - Automate and orchestrate modern data pipeline infrastructure with Apache Airflow.
    
 ## Libraries and Resources Used
